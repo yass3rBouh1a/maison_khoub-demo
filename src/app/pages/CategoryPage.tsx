@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ProductGrid } from '../components/ProductGrid';
-import { FilterSidebar } from '../components/FilterSidebar';
+import { FilterSidebar, FilterAction } from '../components/FilterSidebar';
 import { CollectionHero } from '../components/CollectionHero';
 import { products as allProducts } from '../data/products';
 
@@ -9,6 +9,11 @@ export function CategoryPage() {
     const { slug } = useParams();
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
+    const [filters, setFilters] = useState({
+        priceMin: '',
+        priceMax: '',
+        inStockOnly: false
+    });
 
     // Normalize slug to match category names roughly
     const normalizedSlug = slug ? slug.toLowerCase() : 'all';
@@ -18,19 +23,32 @@ export function CategoryPage() {
         ? 'Toute la Collection'
         : slug ? slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ') : 'Collection';
 
-    // Filter products based on slug/category AND search query
+    // Filter products based on slug/category AND search query AND filters
     const filteredProducts = allProducts.filter(p => {
+        // 1. Search Query
         const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
 
-        if (normalizedSlug === 'all') {
-            return matchesSearch;
+        // 2. Category Filter
+        let matchesCategory = true;
+        if (normalizedSlug !== 'all') {
+            const productCategory = p.category ? p.category.toLowerCase() : '';
+            const productSlug = productCategory.replace(/ & /g, '-').replace(/ /g, '-');
+            matchesCategory = productSlug === normalizedSlug;
         }
 
-        const productCategory = p.category ? p.category.toLowerCase() : '';
-        // Create a slug capability from the category name (e.g. "Kimono & Veste" -> "kimono-veste")
-        const productSlug = productCategory.replace(/ & /g, '-').replace(/ /g, '-');
+        // 3. Price Filter
+        let matchesPrice = true;
+        if (filters.priceMin && p.price < Number(filters.priceMin)) matchesPrice = false;
+        if (filters.priceMax && p.price > Number(filters.priceMax)) matchesPrice = false;
 
-        return productSlug === normalizedSlug && matchesSearch;
+        // 4. Availability Filter
+        let matchesAvailability = true;
+        if (filters.inStockOnly) {
+            // Default to true if inStock is undefined
+            matchesAvailability = p.inStock !== false;
+        }
+
+        return matchesSearch && matchesCategory && matchesPrice && matchesAvailability;
     });
 
     // Dynamic Hero Image based on category or first product
@@ -56,6 +74,15 @@ export function CategoryPage() {
                         <FilterSidebar
                             activeCategory={slug}
                             onSearch={setSearchQuery}
+                            onFilterChange={(filterAction: FilterAction) => {
+                                setFilters(prev => {
+                                    const newFilters = { ...prev };
+                                    if (filterAction.type === 'price_min') newFilters.priceMin = filterAction.value;
+                                    if (filterAction.type === 'price_max') newFilters.priceMax = filterAction.value;
+                                    if (filterAction.type === 'availability') newFilters.inStockOnly = filterAction.value;
+                                    return newFilters;
+                                });
+                            }}
                         />
                     </div>
 

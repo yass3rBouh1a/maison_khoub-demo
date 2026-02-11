@@ -8,6 +8,7 @@ export interface Product {
     description: string;
     isFeatured?: boolean;
     isHot?: boolean;
+    inStock?: boolean;
 }
 
 export const products: Product[] = [
@@ -21,7 +22,8 @@ export const products: Product[] = [
         image: "https://www.kounouz.ma/1698-home_default/caftan-en-crepe-detail-imprime-caftan-marocain-kounouz.jpg",
         description: "L'alliance subtile du crêpe de soie et d'un imprimé floral délicat. Finitions maalem pour une allure sophistiquée.",
         isFeatured: true,
-        isHot: true
+        isHot: true,
+        inStock: false
     },
     {
         id: "k2",

@@ -1,9 +1,15 @@
 import { Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+export type FilterAction =
+    | { type: 'price_min'; value: string }
+    | { type: 'price_max'; value: string }
+    | { type: 'availability'; value: boolean };
+
 interface FilterSidebarProps {
     activeCategory?: string;
     onSearch?: (query: string) => void;
+    onFilterChange?: (action: FilterAction) => void;
     className?: string;
 }
 
@@ -17,7 +23,9 @@ const categories = [
     'Kimono & Veste'
 ];
 
-export function FilterSidebar({ activeCategory, onSearch, className = '' }: FilterSidebarProps) {
+export function FilterSidebar(props: FilterSidebarProps) {
+    const { activeCategory, onSearch, onFilterChange, className = '' } = props;
+
     return (
         <aside className={`w-full ${className}`}>
             {/* Title & Reset */}
@@ -61,13 +69,10 @@ export function FilterSidebar({ activeCategory, onSearch, className = '' }: Filt
                 </h4>
                 <ul className="space-y-3">
                     {categories.map((category) => {
-                        // Create slug from category name (e.g. "Kimono & Veste" -> "kimono-veste"?? User example was "kimono-veste")
-                        // Simple slugify: lowercase, replace & with '', replace spaces with -
                         const slug = category.toLowerCase()
                             .replace(' & ', '-')
-                            .replace(' ', '-'); // fallback for spaces
+                            .replace(' ', '-');
 
-                        // Check active state (handle lenient matching if needed, but exact slug match is best)
                         const isActive = activeCategory === slug;
 
                         return (
@@ -86,6 +91,51 @@ export function FilterSidebar({ activeCategory, onSearch, className = '' }: Filt
                         );
                     })}
                 </ul>
+            </div>
+
+            {/* Price Filter */}
+            <div className="mt-8">
+                <h4
+                    className="text-[#1A1A1A] text-xs font-bold uppercase tracking-wider mb-4"
+                    style={{ fontFamily: 'Lato, sans-serif' }}
+                >
+                    Prix
+                </h4>
+                <div className="flex items-center gap-2">
+                    <input
+                        type="number"
+                        placeholder="Min"
+                        className="w-full py-2 px-3 bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#96754a]"
+                        onChange={(e) => onFilterChange?.({ type: 'price_min', value: e.target.value })}
+                    />
+                    <span className="text-gray-400">-</span>
+                    <input
+                        type="number"
+                        placeholder="Max"
+                        className="w-full py-2 px-3 bg-white border border-gray-200 text-sm focus:outline-none focus:border-[#96754a]"
+                        onChange={(e) => onFilterChange?.({ type: 'price_max', value: e.target.value })}
+                    />
+                </div>
+            </div>
+
+            {/* Availability Filter */}
+            <div className="mt-8">
+                <h4
+                    className="text-[#1A1A1A] text-xs font-bold uppercase tracking-wider mb-4"
+                    style={{ fontFamily: 'Lato, sans-serif' }}
+                >
+                    Disponibilité
+                </h4>
+                <label className="flex items-center gap-3 cursor-pointer group">
+                    <input
+                        type="checkbox"
+                        className="w-4 h-4 border-gray-300 rounded text-[#96754a] focus:ring-[#96754a]"
+                        onChange={(e) => onFilterChange?.({ type: 'availability', value: e.target.checked })}
+                    />
+                    <span className="text-sm text-gray-600 group-hover:text-black transition-colors" style={{ fontFamily: 'Lato, sans-serif' }}>
+                        En stock uniquement
+                    </span>
+                </label>
             </div>
         </aside>
     );
