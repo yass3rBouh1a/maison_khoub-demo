@@ -21,7 +21,9 @@ export function CategoryPage() {
     // Page Title Logic
     const pageTitle = normalizedSlug === 'all'
         ? 'Toute la Collection'
-        : slug ? slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ') : 'Collection';
+        : normalizedSlug === 'new'
+            ? 'Nouveautés'
+            : slug ? slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ') : 'Collection';
 
     // Filter products based on slug/category AND search query AND filters
     const filteredProducts = allProducts.filter(p => {
@@ -30,7 +32,9 @@ export function CategoryPage() {
 
         // 2. Category Filter
         let matchesCategory = true;
-        if (normalizedSlug !== 'all') {
+        if (normalizedSlug === 'new') {
+            matchesCategory = !!p.isFeatured;
+        } else if (normalizedSlug !== 'all') {
             const productCategory = p.category ? p.category.toLowerCase() : '';
             const productSlug = productCategory.replace(/ & /g, '-').replace(/ /g, '-');
             matchesCategory = productSlug === normalizedSlug;
