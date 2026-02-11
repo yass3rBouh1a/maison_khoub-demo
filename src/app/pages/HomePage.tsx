@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Star, Globe, MessageCircle } from 'lucide-react';
 import { Product } from '../data/products';
+import heritageImage from '../../assets/13fdb096ea7d319aa25e7e66eaab5ada24261745.png';
 
 interface HomePageProps {
     products: Product[];
@@ -154,10 +155,7 @@ export function HomePage({ products: allProducts, onProductClick }: HomePageProp
                                 L'HÉRITAGE MAROCAIN
                             </h2>
                             <p className="text-lg text-gray-700 font-light leading-relaxed mb-8 font-sans" style={{ fontFamily: 'Lato, sans-serif' }}>
-                                Chaque pièce raconte une histoire tissée de fils d'or et de soie.
-                                Nous perpétuons un savoir-faire ancestral, où le geste de l'artisan
-                                rencontre la vision contemporaine du luxe. Une élégance intemporelle
-                                qui traverse les générations.
+                                Chaque pièce raconte une histoire tissée de fils d'or et de soie. Nous perpétuons un savoir-faire ancestral, où le geste de l'artisan rencontre la vision contemporaine du luxe. Une élégance intemporelle qui traverse les générations.
                             </p>
                             <Link
                                 to="/savoir-faire"
@@ -181,7 +179,7 @@ export function HomePage({ products: allProducts, onProductClick }: HomePageProp
 
                             {/* Image 2 (Détail) */}
                             <img
-                                src="https://www.kounouz.ma/themes/at_movic/assets/img/modules/appagebuilder/images/0L3A2235_.webp"
+                                src={heritageImage}
                                 alt="Détail Artisanat"
                                 className="absolute -bottom-8 -left-8 lg:-bottom-12 lg:-left-12 h-48 w-48 object-cover rounded-sm border-4 border-white shadow-xl z-10"
                             />
