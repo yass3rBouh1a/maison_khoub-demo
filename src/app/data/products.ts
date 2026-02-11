@@ -11,6 +11,12 @@ export interface Product {
     inStock?: boolean;
 }
 
+export interface CartItem {
+    product: Product;
+    size: string;
+    quantity: number;
+}
+
 export const products: Product[] = [
     // --- CAFTAN (Ex-Kaftans) ---
     {

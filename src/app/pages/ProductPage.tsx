@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
-import { MessageCircle, Truck, ShieldCheck, Phone } from 'lucide-react';
+import { Truck, ShieldCheck, Phone, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useCart } from '../context/CartContext';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL'];
 
 export function ProductPage() {
     const { id } = useParams();
-    // const navigate = useNavigate(); // Unused
-    // const [product, setProduct] = useState<Product | null>(null); // REMOVED
-    const product = products.find(p => p.id === id) || null; // Derived
+    const product = products.find(p => p.id === id) || null;
+    const { addToCart } = useCart();
 
     const [selectedSize, setSelectedSize] = useState('M');
     const [mainImage, setMainImage] = useState<string>('');
@@ -41,11 +41,11 @@ export function ProductPage() {
 
     const allImages = [product.image, product.image, product.image, product.image]; // Mock images
 
-    const handleWhatsAppOrder = () => {
-        const phoneNumber = "212661380961";
-        const message = `Bonjour Maison Khoub, je souhaite commander : ${product.name} (Taille: ${selectedSize}). Est-il disponible ?`;
-        const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
-        window.open(whatsappUrl, '_blank');
+    // Replace direct WhatsApp order with Add to Cart
+    const handleAddToCart = () => {
+        if (product) {
+            addToCart(product, selectedSize);
+        }
     };
 
     // Similar Products Logic
@@ -144,16 +144,13 @@ export function ProductPage() {
                             </div>
                         </div>
 
-                        {/* DESKTOP CTA (Hidden on Mobile/Replaced by Sticky?) 
-                            Actually user requests Sticky only when scrolled. 
-                            So we keep this Main CTA visible always inline.
-                        */}
+                        {/* DESKTOP CTA */}
                         <button
-                            onClick={handleWhatsAppOrder}
-                            className="w-full py-4 bg-[#96754a] text-white hover:bg-[#7d6240] transition-colors flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest font-bold text-sm rounded-sm"
+                            onClick={handleAddToCart}
+                            className="w-full py-4 bg-[#2A2624] text-white hover:bg-[#4a4a4a] transition-colors flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest font-bold text-sm rounded-sm"
                         >
-                            <MessageCircle size={20} />
-                            Commander sur WhatsApp
+                            <ShoppingBag size={20} />
+                            Ajouter au Panier
                         </button>
 
                         {/* Reassurance Block */}
@@ -212,11 +209,11 @@ export function ProductPage() {
                             <p className="text-[#96754a] text-xs font-medium">{product.price.toLocaleString('fr-MA')} MAD</p>
                         </div>
                         <button
-                            onClick={handleWhatsAppOrder}
-                            className="bg-[#25D366] text-white px-6 py-3 rounded-full font-bold text-sm shadow-md flex items-center gap-2"
+                            onClick={handleAddToCart}
+                            className="bg-[#2A2624] text-white px-6 py-3 rounded-full font-bold text-sm shadow-md flex items-center gap-2"
                         >
-                            <MessageCircle size={18} />
-                            Commander
+                            <ShoppingBag size={18} />
+                            Ajouter
                         </button>
                     </motion.div>
                 )}

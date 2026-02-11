@@ -2,11 +2,9 @@ import { useState, useEffect } from 'react';
 import { Menu, Search, X, User, ShoppingBag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import logoImage from '../../assets/logo.png';
+import { useCart } from '../context/CartContext';
 
-interface HeaderProps {
-  onMenuClick?: () => void;
-  cartItemsCount?: number;
-}
+// ... interface (remove cartItemsCount prop)
 
 const categories = [
   'Djellaba',
@@ -17,9 +15,10 @@ const categories = [
   'Kimono & Veste',
 ];
 
-export function Header({ cartItemsCount = 0 }: HeaderProps) {
+export function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { cartCount, openCart } = useCart();
 
   // Scroll detection for background transition
   useEffect(() => {
@@ -35,12 +34,7 @@ export function Header({ cartItemsCount = 0 }: HeaderProps) {
     ? 'bg-white/70 shadow-sm backdrop-blur-md'
     : 'bg-transparent';
 
-  // Text color logic: Darker when scrolled or always dark? 
-  // User said "Texte : #2A2624 (Noir charbon doux)". 
-  // If transparent bg is on a dark Hero, text needs to be white.
-  // Assuming the hero is the visual mockups which are usually light or have overlay.
-  // The user prompt implies "Texte : #2A2624" generally. 
-  // Let's stick to Soft Black. If contrast issue, user will flag.
+  // Text color logic
   const textColorClass = 'text-[#2A2624]';
 
   return (
@@ -83,15 +77,15 @@ export function Header({ cartItemsCount = 0 }: HeaderProps) {
                   <User size={20} strokeWidth={1.5} />
                   <span className="text-xs uppercase tracking-widest font-semibold group-hover:text-[#96754a]">Compte</span>
                 </Link>
-                <Link to="#" className={`flex items-center gap-2 ${textColorClass} hover:text-[#96754a] transition-colors group relative`}>
+                <button onClick={openCart} className={`flex items-center gap-2 ${textColorClass} hover:text-[#96754a] transition-colors group relative bg-transparent border-none cursor-pointer`}>
                   <ShoppingBag size={20} strokeWidth={1.5} />
                   <span className="text-xs uppercase tracking-widest font-semibold group-hover:text-[#96754a]">Panier</span>
-                  {cartItemsCount > 0 && (
+                  {cartCount > 0 && (
                     <span className="absolute -top-2 -right-2 bg-[#96754a] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                      {cartItemsCount}
+                      {cartCount}
                     </span>
                   )}
-                </Link>
+                </button>
               </div>
             </div>
 
@@ -139,14 +133,14 @@ export function Header({ cartItemsCount = 0 }: HeaderProps) {
             </Link>
 
             {/* Right: Cart */}
-            <Link to="#" className="relative p-2 -mr-2">
+            <button onClick={openCart} className="relative p-2 -mr-2 bg-transparent border-none">
               <ShoppingBag size={24} className={textColorClass} strokeWidth={1.5} />
-              {cartItemsCount > 0 && (
+              {cartCount > 0 && (
                 <span className="absolute top-0 right-0 bg-[#96754a] text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full">
-                  {cartItemsCount}
+                  {cartCount}
                 </span>
               )}
-            </Link>
+            </button>
           </div>
         </div>
       </header>

@@ -8,6 +8,8 @@ import { CategoryPage } from './pages/CategoryPage';
 import { ProductPage } from './pages/ProductPage';
 import { products, upsellProduct, Product } from './data/products';
 import { WhatsAppFloat } from './components/ui/WhatsAppFloat';
+import { CartProvider, useCart } from './context/CartContext';
+import { CartDrawer } from './components/CartDrawer';
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -23,23 +25,17 @@ function AppContent() {
   const navigate = useNavigate();
   // const [_selectedProduct, setSelectedProduct] = useState<Product | null>(null); // For Upsell context mainly
   const [showUpsellModal, setShowUpsellModal] = useState(false);
-  const [cartItems, setCartItems] = useState<Array<{ product: Product; size: string }>>([]);
+  // const [cartItems, setCartItems] = useState<Array<{ product: Product; size: string }>>([]);
+  const { addToCart } = useCart();
 
   const handleProductClick = (product: Product) => {
     navigate(`/product/${product.id}`);
   };
 
-  // const _handleAddToCart = (product: Product, size: string) => {
-  //   // Show upsell modal after adding to cart
-  //   setCartItems([...cartItems, { product, size }]);
-  //   setSelectedProduct(product);
-  //   setShowUpsellModal(true);
-  // };
-
   const handleAddUpsell = () => { // Removed product arg as it's upsellProduct
-    setCartItems([...cartItems, { product: upsellProduct, size: 'Universal' }]);
+    addToCart(upsellProduct, 'Universal');
     setShowUpsellModal(false);
-    navigate('/'); // Redirect home or stay?
+    // navigate('/'); // Redirect home or stay?
   };
 
   const handleDeclineUpsell = () => {
@@ -54,9 +50,10 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBF7F0] flex flex-col justify-between">
+    <div className="min-h-screen bg-[#FBF7F0] flex flex-col justify-between relative">
       <ScrollToTop />
-      <Header cartItemsCount={cartItems.length} />
+      <Header />
+      <CartDrawer />
 
       <main className="flex-grow">
         <Routes>
@@ -93,7 +90,9 @@ function AppContent() {
 function App() {
   return (
     <Router>
-      <AppContent />
+      <CartProvider>
+        <AppContent />
+      </CartProvider>
     </Router>
   );
 }
