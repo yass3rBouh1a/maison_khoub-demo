@@ -47,7 +47,7 @@ export function HomePage({ products: allProducts, onProductClick }: HomePageProp
                 {/* Left Column - Lifestyle */}
                 <div className="relative w-full md:w-1/2 h-[60vh] md:h-full group overflow-hidden cursor-pointer">
                     <img
-                        src="https://images.unsplash.com/photo-1588697193269-58b22cee2170?q=80&w=1974&auto=format&fit=crop"
+                        src="https://www.kounouz.ma/2278-home_default/ensemble-caftan-deux-pieces.jpg"
                         alt="Collection Kaftan"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
@@ -63,7 +63,7 @@ export function HomePage({ products: allProducts, onProductClick }: HomePageProp
                 {/* Right Column - Detail */}
                 <div className="relative w-full md:w-1/2 h-[60vh] md:h-full group overflow-hidden cursor-pointer">
                     <img
-                        src="https://images.unsplash.com/photo-1545959828-86d77366eb68?q=80&w=2070&auto=format&fit=crop"
+                        src="https://www.kounouz.ma/2331-home_default/kimono-femme.jpg"
                         alt="Collection Djellaba"
                         className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                     />
