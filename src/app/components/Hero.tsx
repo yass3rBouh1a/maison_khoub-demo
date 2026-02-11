@@ -7,7 +7,7 @@ export function Hero({ onCTAClick }: HeroProps) {
     <section className="relative w-full h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}
       <img
-        src="https://www.kounouz.ma/themes/at_movic/assets/img/modules/appagebuilder/images/0L3A2235_.webp"
+        src="https://images.pexels.com/photos/2448418/pexels-photo-2448418.jpeg"
         alt="Maison Khoub - L'Élégance Marocaine"
         className="absolute inset-0 w-full h-full object-cover"
         // Astuce Performance : lazy="eager" pour que l'image charge en priorité
