@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Star, Globe, MessageCircle } from 'lucide-react';
 import { Product } from '../data/products';
-import heritageImage from '../../assets/13fdb096ea7d319aa25e7e66eaab5ada24261745.png';
 
 interface HomePageProps {
     products: Product[];
@@ -179,7 +178,7 @@ export function HomePage({ products: allProducts, onProductClick }: HomePageProp
 
                             {/* Image 2 (Détail) */}
                             <img
-                                src={heritageImage}
+                                src="https://www.kounouz.ma/2278-home_default/ensemble-caftan-deux-pieces.jpg"
                                 alt="Détail Artisanat"
                                 className="absolute -bottom-8 -left-8 lg:-bottom-12 lg:-left-12 h-48 w-48 object-cover rounded-sm border-4 border-white shadow-xl z-10"
                             />
