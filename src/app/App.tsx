@@ -21,7 +21,7 @@ function ScrollToTop() {
 
 function AppContent() {
   const navigate = useNavigate();
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // For Upsell context mainly
+  // const [_selectedProduct, setSelectedProduct] = useState<Product | null>(null); // For Upsell context mainly
   const [showUpsellModal, setShowUpsellModal] = useState(false);
   const [cartItems, setCartItems] = useState<Array<{ product: Product; size: string }>>([]);
 
@@ -29,12 +29,12 @@ function AppContent() {
     navigate(`/product/${product.id}`);
   };
 
-  const handleAddToCart = (product: Product, size: string) => {
-    // Show upsell modal after adding to cart
-    setCartItems([...cartItems, { product, size }]);
-    setSelectedProduct(product);
-    setShowUpsellModal(true);
-  };
+  // const _handleAddToCart = (product: Product, size: string) => {
+  //   // Show upsell modal after adding to cart
+  //   setCartItems([...cartItems, { product, size }]);
+  //   setSelectedProduct(product);
+  //   setShowUpsellModal(true);
+  // };
 
   const handleAddUpsell = () => { // Removed product arg as it's upsellProduct
     setCartItems([...cartItems, { product: upsellProduct, size: 'Universal' }]);

@@ -1,8 +1,7 @@
-import { useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import useEmblaCarousel from 'embla-carousel-react';
 import { Star, Globe, MessageCircle } from 'lucide-react';
-import { products, Product } from '../data/products';
+import { Product } from '../data/products';
 
 interface HomePageProps {
     products: Product[];

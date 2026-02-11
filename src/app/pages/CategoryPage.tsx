@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ProductGrid } from '../components/ProductGrid';
 import { FilterSidebar } from '../components/FilterSidebar';
 import { CollectionHero } from '../components/CollectionHero';
-import { Product, products as allProducts } from '../data/products';
+import { products as allProducts } from '../data/products';
 
 export function CategoryPage() {
     const { slug } = useParams();

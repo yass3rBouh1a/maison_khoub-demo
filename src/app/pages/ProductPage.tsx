@@ -1,29 +1,29 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
-import { Product } from '../data/products';
-import { MessageCircle, Truck, ShieldCheck, Phone, ChevronLeft, ChevronRight } from 'lucide-react';
+import { MessageCircle, Truck, ShieldCheck, Phone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL'];
 
 export function ProductPage() {
     const { id } = useParams();
-    const navigate = useNavigate();
-    const [product, setProduct] = useState<Product | null>(null);
+    // const navigate = useNavigate(); // Unused
+    // const [product, setProduct] = useState<Product | null>(null); // REMOVED
+    const product = products.find(p => p.id === id) || null; // Derived
+
     const [selectedSize, setSelectedSize] = useState('M');
     const [mainImage, setMainImage] = useState<string>('');
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [showStickyBar, setShowStickyBar] = useState(false);
 
     useEffect(() => {
-        const foundProduct = products.find(p => p.id === id);
-        if (foundProduct) {
-            setProduct(foundProduct);
-            setMainImage(foundProduct.image);
+        if (product) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
+            setMainImage(product.image);
             window.scrollTo(0, 0);
         }
-    }, [id, navigate]);
+    }, [product]);
 
     // Scroll listener for Sticky Bar
     useEffect(() => {
