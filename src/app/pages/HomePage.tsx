@@ -99,8 +99,16 @@ export function HomePage({ products: allProducts, onProductClick }: HomePageProp
                                     >
                                         <div className="relative aspect-[3/4] overflow-hidden bg-[#ECECEC]">
                                             {/* Badge */}
+                                            {/* Hot Sale Badge */}
+                                            {product.isHot && (
+                                                <div className="absolute top-0 left-0 z-20 bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1">
+                                                    HOT SALE
+                                                </div>
+                                            )}
+
+                                            {/* Badge */}
                                             {product.isFeatured && (
-                                                <span className="absolute top-4 left-4 bg-white/90 px-3 py-1 text-[10px] uppercase tracking-widest text-black z-10">
+                                                <span className="absolute top-8 left-0 bg-white/90 px-3 py-1 text-[10px] uppercase tracking-widest text-black z-10">
                                                     Nouveau
                                                 </span>
                                             )}
