@@ -7,6 +7,7 @@ export interface Product {
     slug: string;
     description: string;
     isFeatured?: boolean;
+    isHot?: boolean;
 }
 
 export const products: Product[] = [
@@ -19,7 +20,8 @@ export const products: Product[] = [
         category: "Caftan",
         image: "https://www.kounouz.ma/1698-home_default/caftan-en-crepe-detail-imprime-caftan-marocain-kounouz.jpg",
         description: "L'alliance subtile du crêpe de soie et d'un imprimé floral délicat. Finitions maalem pour une allure sophistiquée.",
-        isFeatured: true
+        isFeatured: true,
+        isHot: true
     },
     {
         id: "k2",
@@ -51,7 +53,8 @@ export const products: Product[] = [
         category: "Djellaba",
         image: "https://www.kounouz.ma/2191-home_default/djellaba-femme-manches-larges-avec-bande.jpg",
         description: "Manches amples sublimées par une bande en tweed. Idéale pour la saison fraîche avec son tissu lainage.",
-        isFeatured: true
+        isFeatured: true,
+        isHot: true
     },
     {
         id: "d2",
@@ -117,7 +120,8 @@ export const products: Product[] = [
         category: "Jabador",
         image: "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?auto=format&fit=crop&q=80&w=800",
         description: "Ensemble Jabador 2 pièces en crêpe de soie ivoire. Broderies fines et coupe ajustée.",
-        isFeatured: false
+        isFeatured: false,
+        isHot: true
     },
 
     // --- TUNIQUE (New) ---

@@ -4,6 +4,7 @@ export interface Product {
   price: number;
   image: string;
   category?: string;
+  isHot?: boolean;
 }
 
 interface ProductCardProps {
@@ -24,6 +25,12 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
         />
+        {/* HOT SALE Badge */}
+        {product.isHot && (
+          <div className="absolute top-0 left-0 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1">
+            HOT SALE
+          </div>
+        )}
         {/* Gradient Overlay for Readability */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
       </div>

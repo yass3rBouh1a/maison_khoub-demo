@@ -10,24 +10,33 @@ export function WhatsAppFloat() {
             href={whatsappUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed z-50 bottom-8 right-6 md:bottom-6 md:right-6 group"
+            className="fixed z-50 bottom-6 right-6 group"
             aria-label="Contact us on WhatsApp"
         >
             <motion.div
                 initial={{ opacity: 0, scale: 0.5 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: 1 }}
-                className="relative flex items-center justify-center w-14 h-14 bg-[#25D366] rounded-full shadow-lg hover:bg-[#20bd5a] transition-colors"
+                whileHover={{ y: -4 }}
+                transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                className="relative"
             >
-                {/* Pulse Effect */}
-                <span className="absolute inline-flex h-full w-full rounded-full bg-[#25D366] opacity-75 animate-ping duration-1000" style={{ animationDuration: '3s' }}></span>
+                {/* Pulse Effect - Behind the button */}
+                <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-75 animate-ping" style={{ animationDuration: '3s' }}></span>
 
-                <MessageCircle size={32} color="white" fill="white" className="relative z-10" />
+                {/* Button Container */}
+                <div className="relative z-10 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full shadow-lg transition-colors flex items-center">
 
-                {/* Tooltip (Desktop only) */}
-                <span className="absolute right-full mr-4 px-3 py-1 bg-white text-[#2A2624] text-xs font-bold rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none hidden md:block">
-                    Discutez avec nous
-                </span>
+                    {/* Mobile View: Icon Only (60px) */}
+                    <div className="flex md:hidden items-center justify-center w-[60px] h-[60px] rounded-full">
+                        <MessageCircle size={28} fill="white" className="text-white" />
+                    </div>
+
+                    {/* Desktop View: Icon + Text (Pill) */}
+                    <div className="hidden md:flex items-center px-6 py-3 gap-3">
+                        <MessageCircle size={24} fill="white" className="text-white" />
+                        <span className="font-bold text-base whitespace-nowrap">Commander sur WhatsApp</span>
+                    </div>
+                </div>
             </motion.div>
         </a>
     );
