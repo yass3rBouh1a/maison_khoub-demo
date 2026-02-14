@@ -10,8 +10,8 @@ export function CartDrawer() {
         const phoneNumber = "212661380961";
         const messageHeader = "Bonjour Maison Khoub, je souhaite commander les articles suivants :\n\n";
         const messageItems = cartItems.map(item =>
-            `- ${item.product.name} (Taille: ${item.size}) x${item.quantity} - ${(item.product.price * item.quantity).toLocaleString('fr-MA')} MAD`
-        ).join('\n');
+            `- ${item.product.name} (Taille: ${item.size}) x${item.quantity} - ${(item.product.price * item.quantity).toLocaleString('fr-MA')} MAD\n  Photo: ${window.location.origin}${item.product.image}`
+        ).join('\n\n');
         const messageFooter = `\n\nTotal: ${cartTotal.toLocaleString('fr-MA')} MAD\n\nPouvez-vous confirmer la disponibilité ?`;
 
         const fullMessage = messageHeader + messageItems + messageFooter;

@@ -1,19 +1,10 @@
-import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ProductGrid } from '../components/ProductGrid';
-import { FilterSidebar, FilterAction } from '../components/FilterSidebar';
-import { CollectionHero } from '../components/CollectionHero';
 import { products as allProducts } from '../data/products';
 
 export function CategoryPage() {
     const { slug } = useParams();
     const navigate = useNavigate();
-    const [searchQuery, setSearchQuery] = useState('');
-    const [filters, setFilters] = useState({
-        priceMin: '',
-        priceMax: '',
-        inStockOnly: false
-    });
 
     // Normalize slug to match category names roughly
     const normalizedSlug = slug ? slug.toLowerCase() : 'all';
@@ -25,12 +16,9 @@ export function CategoryPage() {
             ? 'Nouveautés'
             : slug ? slug.charAt(0).toUpperCase() + slug.slice(1).replace(/-/g, ' ') : 'Collection';
 
-    // Filter products based on slug/category AND search query AND filters
+    // Filter products based on slug/category
     const filteredProducts = allProducts.filter(p => {
-        // 1. Search Query
-        const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase());
-
-        // 2. Category Filter
+        // Category Filter
         let matchesCategory = true;
         if (normalizedSlug === 'new') {
             matchesCategory = !!p.isFeatured;
@@ -40,41 +28,45 @@ export function CategoryPage() {
             matchesCategory = productSlug === normalizedSlug;
         }
 
-        // 3. Price Filter
-        let matchesPrice = true;
-        if (filters.priceMin && p.price < Number(filters.priceMin)) matchesPrice = false;
-        if (filters.priceMax && p.price > Number(filters.priceMax)) matchesPrice = false;
-
-        // 4. Availability Filter
-        let matchesAvailability = true;
-        if (filters.inStockOnly) {
-            // Default to true if inStock is undefined
-            matchesAvailability = p.inStock !== false;
-        }
-
-        return matchesSearch && matchesCategory && matchesPrice && matchesAvailability;
+        return matchesCategory;
     });
 
-    // Dynamic Hero Image based on category or first product
-    // If 'all', use a generic luxury banner or the first product
-    const heroImage = filteredProducts.length > 0
-        ? filteredProducts[0].image
-        : 'https://images.unsplash.com/photo-1549439602-43ebca2327af?q=80&w=2070&auto=format&fit=crop';
-
     return (
-        <div className="bg-[#FBF7F0] min-h-screen pb-24">
-            {/* Hero Banner */}
-            <CollectionHero
-                title={pageTitle}
-                description="Découvrez nos créations exclusives, alliant savoir-faire traditionnel et élégance contemporaine."
-                image={heroImage}
-            />
+        <div className="bg-[#FBF7F0] min-h-screen pb-24 font-sans">
 
-            <div className="container mx-auto px-8 mt-12">
-                <div className="flex flex-col lg:flex-row gap-12">
+            {/* Header / Filter Section */}
+            <div className="container mx-auto px-4 md:px-8 pt-12 mb-12">
+                <div className="flex flex-col gap-2">
+                    {/* Breadcrumb / Label */}
+                    <span className="text-xs font-bold tracking-widest text-[#1A1A1A] uppercase">
+                        COLLECTION
+                    </span>
 
-                    {/* Sidebar - Hidden on Mobile for MVP (or add Sheet later) */}
-                    <div className="hidden lg:block w-1/4 sticky top-32 self-start">
+                    <div className="flex justify-between items-end">
+                        {/* Title & Count */}
+                        <div className="flex items-baseline gap-3">
+                            <h1 className="text-4xl md:text-5xl font-serif text-[#1A1A1A]">
+                                {pageTitle}
+                            </h1>
+                            <span className="text-sm md:text-base text-gray-500 font-light">
+                                ({filteredProducts.length})
+                            </span>
+                        </div>
+
+                        {/* Filter Button */}
+                        <button className="hidden md:flex items-center gap-2 text-sm font-bold tracking-widest border-b border-[#1A1A1A] pb-1 uppercase hover:opacity-70 transition-opacity">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M4 6H20M7 12H17M10 18H14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                            Filtrer
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div className="container mx-auto px-4 md:px-8">
+                {/* Sidebar - Hidden for this layout style as requested (Hermes uses slide-over or top filters usually, for now removing sidebar to match image cleanly) */}
+                {/* <div className="hidden lg:block w-1/4 sticky top-32 self-start">
                         <FilterSidebar
                             activeCategory={slug}
                             onSearch={setSearchQuery}
@@ -88,31 +80,22 @@ export function CategoryPage() {
                                 });
                             }}
                         />
-                    </div>
+                    </div> */}
 
-                    {/* Main Content - Grid */}
-                    <div className="w-full lg:w-3/4">
-                        {/* Mobile Filter Toggle Placeholder (could be added here) */}
-
-                        {filteredProducts.length > 0 ? (
-                            <ProductGrid
-                                products={filteredProducts}
-                                onProductClick={(product) => navigate(`/product/${product.id}`)}
-                            />
-                        ) : (
-                            <div className="py-24 text-center">
-                                <p className="text-gray-500 font-light italic text-lg" style={{ fontFamily: 'Lato, sans-serif' }}>
-                                    Aucun produit ne correspond à votre recherche.
-                                </p>
-                                <button
-                                    onClick={() => setSearchQuery('')}
-                                    className="mt-4 text-[#96754a] hover:underline"
-                                >
-                                    Effacer la recherche
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                {/* Main Content - Grid */}
+                <div className="w-full">
+                    {filteredProducts.length > 0 ? (
+                        <ProductGrid
+                            products={filteredProducts}
+                            onProductClick={(product) => navigate(`/product/${product.id}`)}
+                        />
+                    ) : (
+                        <div className="py-24 text-center">
+                            <p className="text-gray-500 font-light italic text-lg">
+                                Aucun produit ne correspond à votre recherche.
+                            </p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

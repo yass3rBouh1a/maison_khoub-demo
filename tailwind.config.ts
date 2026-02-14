@@ -10,11 +10,11 @@ export default {
                 primary: '#96754a',
                 'luxury-cream': '#FBF7F0', // Background Global
                 'luxury-taupe': '#F2EBE3', // Surfaces Secondaires
-                'luxury-black': '#2A2624', // Textes & Titres
+                'luxury-black': '#2A2624', // Textes & Titres & Dark UI
                 'luxury-border': '#E5DCD0', // Bordures
             },
             fontFamily: {
-                sans: ['Lato', 'sans-serif'],
+                sans: ['Lato', 'Inter', 'sans-serif'],
                 serif: ['Playfair Display', 'serif'],
             },
         },

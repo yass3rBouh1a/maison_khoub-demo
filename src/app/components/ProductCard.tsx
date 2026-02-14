@@ -1,3 +1,4 @@
+import { ShoppingBag } from 'lucide-react';
 export interface Product {
   id: string;
   name: string;
@@ -27,8 +28,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
         />
         {/* HOT SALE Badge */}
         {product.isHot && (
-          <div className="absolute top-0 left-0 z-10 bg-red-600 text-white text-[10px] font-bold uppercase tracking-widest px-3 py-1">
-            HOT SALE
+          <div className="absolute top-0 left-0 z-10 bg-luxury-black text-white text-[10px] lowercase tracking-widest px-3 py-1 font-medium">
+            hot sale
           </div>
         )}
         {/* Gradient Overlay for Readability */}
@@ -36,28 +37,26 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
       </div>
 
       {/* Product Info */}
-      <div className="space-y-1">
-        <h3
-          className="text-[#1A1A1A]"
-          style={{
-            fontFamily: 'Playfair Display, serif',
-            fontSize: '16px',
-            fontWeight: 400,
-            letterSpacing: '0.01em'
+      <div className="flex justify-between items-end mt-4">
+        <div className="space-y-1">
+          <h3 className="text-[#1A1A1A] font-serif text-lg leading-tight">
+            {product.name}
+          </h3>
+          <p className="text-[#1A1A1A] font-sans text-base">
+            {product.price.toLocaleString('fr-MA')} €
+          </p>
+        </div>
+
+        <button
+          className="w-10 h-10 rounded-full border border-gray-300 flex items-center justify-center text-[#1A1A1A] hover:bg-gray-100 transition-colors"
+          aria-label="Ajouter au panier"
+          onClick={(e) => {
+            e.stopPropagation();
+            // Add to cart logic would go here
           }}
         >
-          {product.name}
-        </h3>
-        <p
-          className="text-[#96754a]"
-          style={{
-            fontFamily: 'Lato, sans-serif',
-            fontSize: '14px',
-            fontWeight: 400
-          }}
-        >
-          {product.price.toLocaleString('fr-MA')} MAD
-        </p>
+          <ShoppingBag size={16} strokeWidth={1.5} />
+        </button>
       </div>
     </div>
   );

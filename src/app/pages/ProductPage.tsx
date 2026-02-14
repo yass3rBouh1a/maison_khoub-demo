@@ -1,11 +1,43 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { products } from '../data/products';
-import { Truck, ShieldCheck, Phone, ShoppingBag } from 'lucide-react';
+import { ShoppingBag, Plus, Minus } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../context/CartContext';
 
 const sizes = ['XS', 'S', 'M', 'L', 'XL'];
+
+const AccordionItem = ({ title, children }: { title: string; children: React.ReactNode }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="border-t border-[#E5DCD0]">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full py-4 flex items-center justify-between text-left group"
+            >
+                <span className="text-[#1A1A1A] font-bold text-xs uppercase tracking-widest group-hover:opacity-70 transition-opacity">
+                    {title}
+                </span>
+                {isOpen ? <Minus size={16} /> : <Plus size={16} />}
+            </button>
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                    >
+                        <div className="pb-6 text-[#1A1A1A]/80 font-light text-sm leading-relaxed">
+                            {children}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+};
 
 export function ProductPage() {
     const { id } = useParams();
@@ -13,22 +45,26 @@ export function ProductPage() {
     const { addToCart } = useCart();
 
     const [selectedSize, setSelectedSize] = useState('M');
+    // Default to first color if available, or empty string
+    const [selectedColor, setSelectedColor] = useState<string>('');
     const [mainImage, setMainImage] = useState<string>('');
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [showStickyBar, setShowStickyBar] = useState(false);
 
     useEffect(() => {
         if (product) {
-            // eslint-disable-next-line react-hooks/set-state-in-effect
             setMainImage(product.image);
+            // initialize color
+            if (product.colors && product.colors.length > 0) {
+                setSelectedColor(product.colors[0].name);
+            }
             window.scrollTo(0, 0);
         }
     }, [product]);
 
-    // Scroll listener for Sticky Bar
+    // Scroll listener
     useEffect(() => {
         const handleScroll = () => {
-            // Show after scrolling past 300px
             setShowStickyBar(window.scrollY > 300);
         };
         window.addEventListener('scroll', handleScroll);
@@ -39,9 +75,11 @@ export function ProductPage() {
         return <div className="min-h-screen flex items-center justify-center">Chargement...</div>;
     }
 
-    const allImages = [product.image, product.image, product.image, product.image]; // Mock images
+    // Use product images if available, otherwise fallback to mock array
+    const allImages = product.images && product.images.length > 0
+        ? product.images
+        : [product.image, product.image, product.image, product.image];
 
-    // Replace direct WhatsApp order with Add to Cart
     const handleAddToCart = () => {
         if (product) {
             addToCart(product, selectedSize);
@@ -50,26 +88,28 @@ export function ProductPage() {
 
     // Similar Products Logic
     const similarProducts = products
-        .filter(p => p.category === product.category && p.id !== product.id)
-        .slice(0, 3);
+        .filter(p => p.category === product.category && p.id !== product.id);
+
+    // "Le Compagnon Idéal" - Take the first similar product
+    const perfectMatch = similarProducts.length > 0 ? similarProducts[0] : null;
+    // "Explorez d'autres pistes" - Take the rest
+    const otherSuggestions = similarProducts.slice(1, 4);
 
     return (
-        <div className="min-h-screen bg-[#FBF7F0] pt-24 pb-32 lg:pb-24">
+        <div className="min-h-screen bg-[#FBF7F0] pt-24 pb-32 lg:pb-24 font-sans">
             <div className="container mx-auto px-4 lg:px-8">
 
-                {/* SECTION 1: PRODUCT DETAILS (Grid) */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-20">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
 
-                    {/* Left Column: Images */}
+                    {/* --- LEFT: IMAGES --- */}
                     <div className="flex flex-col gap-6">
-
-                        {/* --- DESKTOP GALLERY (Grid) --- */}
+                        {/* Desktop Grid */}
                         <div className="hidden lg:flex flex-col gap-6">
-                            <div className="aspect-[3/4] w-full rounded-lg overflow-hidden bg-[#F2EBE3] relative">
+                            <div className="aspect-[3/4] w-full bg-[#F2EBE3] relative">
                                 <img
                                     src={mainImage}
                                     alt={product.name}
-                                    className="w-full h-full object-cover transition-transform duration-700 hover:scale-105 cursor-zoom-in"
+                                    className="w-full h-full object-cover"
                                 />
                             </div>
                             <div className="grid grid-cols-4 gap-4">
@@ -77,19 +117,18 @@ export function ProductPage() {
                                     <div
                                         key={i}
                                         onClick={() => setMainImage(img)}
-                                        className={`aspect-[3/4] cursor-pointer rounded-md overflow-hidden border-2 transition-all ${mainImage === img ? 'border-[#96754a]' : 'border-transparent hover:border-[#E5DCD0]'}`}
+                                        className={`aspect-[3/4] cursor-pointer border transition-all ${mainImage === img ? 'border-[#1A1A1A]' : 'border-transparent hover:border-[#E5DCD0]'}`}
                                     >
-                                        <img src={img} className="w-full h-full object-cover" alt={`View ${i}`} />
+                                        <img src={img} className="w-full h-full object-cover" alt={`Thumbnail ${i}`} />
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        {/* --- MOBILE GALLERY (Carousel) --- */}
-                        <div className="lg:hidden relative w-full -mx-4 px-4 sm:mx-auto sm:px-0">
-                            {/* Using negative margin to break container padding on mobile if needed, but keeping simple for now */}
+                        {/* Mobile Carousel */}
+                        <div className="lg:hidden relative w-full -mx-4 px-4">
                             <div
-                                className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-4 pb-8"
+                                className="flex overflow-x-auto snap-x snap-mandatory scrollbar-hide gap-0"
                                 onScroll={(e) => {
                                     const scrollLeft = e.currentTarget.scrollLeft;
                                     const width = e.currentTarget.offsetWidth;
@@ -97,96 +136,123 @@ export function ProductPage() {
                                 }}
                             >
                                 {allImages.map((img, i) => (
-                                    <div key={i} className="flex-shrink-0 w-full snap-center bg-[#F2EBE3] rounded-lg overflow-hidden aspect-[3/4]">
+                                    <div key={i} className="flex-shrink-0 w-full snap-center bg-[#F2EBE3] aspect-[3/4]">
                                         <img src={img} alt={`${product.name} ${i}`} className="w-full h-full object-cover" />
                                     </div>
                                 ))}
                             </div>
-
                             {/* Dots */}
-                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                            <div className="flex justify-center gap-2 mt-4">
                                 {allImages.map((_, i) => (
                                     <div
                                         key={i}
-                                        className={`w-2 h-2 rounded-full transition-colors ${i === currentImageIndex ? 'bg-[#96754a]' : 'bg-[#E5DCD0]'}`}
+                                        className={`w-1.5 h-1.5 rounded-full transition-colors ${i === currentImageIndex ? 'bg-[#1A1A1A]' : 'bg-[#E5DCD0]'}`}
                                     />
                                 ))}
                             </div>
                         </div>
-
                     </div>
 
-                    {/* Right Column: Info & Sticky */}
-                    <div className="lg:sticky lg:top-24 lg:self-start h-fit space-y-6 lg:space-y-8">
-                        <div>
-                            <p className="text-[#96754a] text-xs uppercase tracking-widest mb-4 font-light">MAISON KHOUB / {product.category}</p>
-                            <h1 className="text-[#2A2624] mb-4 text-3xl lg:text-5xl leading-tight" style={{ fontFamily: 'Playfair Display, serif' }}>{product.name}</h1>
-                            <p className="text-[#96754a] text-2xl font-light">{product.price.toLocaleString('fr-MA')} MAD</p>
+                    {/* --- RIGHT: INFO --- */}
+                    <div className="lg:sticky lg:top-24 lg:self-start h-fit pt-4">
+
+                        {/* Title & Price */}
+                        <div className="mb-8">
+                            <h1 className="text-[#1A1A1A] text-2xl lg:text-3xl font-serif uppercase tracking-wide mb-2">
+                                {product.name}
+                            </h1>
+                            <p className="text-[#1A1A1A] text-lg font-light">
+                                {product.price.toLocaleString('fr-MA')} MAD
+                            </p>
                         </div>
 
-                        <div className="text-[#2A2624]/80 space-y-4 leading-relaxed font-light text-base">
-                            <p>{product.description}</p>
-                        </div>
+                        {/* Colors */}
+                        {product.colors && product.colors.length > 0 && (
+                            <div className="mb-8">
+                                <p className="text-xs font-bold text-[#1A1A1A]/60 mb-3">
+                                    Couleur <span className="text-[#1A1A1A] uppercase">{selectedColor}</span>
+                                </p>
+                            </div>
+                        )}
 
-                        {/* Size Selector */}
-                        <div>
-                            <p className="text-[#2A2624] mb-3 text-xs font-bold tracking-widest uppercase">Taille</p>
-                            <div className="flex gap-3">
-                                {sizes.map((size) => (
-                                    <button
-                                        key={size}
-                                        onClick={() => setSelectedSize(size)}
-                                        className={`w-12 h-12 rounded border transition-all ${selectedSize === size ? 'border-[#96754a] bg-[#96754a] text-white' : 'border-[#E5DCD0] bg-white text-[#2A2624] hover:border-[#96754a]'}`}
-                                    >
-                                        {size}
-                                    </button>
-                                ))}
+                        {/* Size (Link style as per reference "Choisir sa taille") */}
+                        <div className="mb-8 border-b border-[#E5DCD0] pb-2">
+                            <div className="flex justify-between items-center py-2 cursor-pointer group">
+                                <span className="text-sm text-[#1A1A1A]">Choisir sa taille</span>
+                                <div className="flex gap-2">
+                                    {sizes.map(size => (
+                                        <button
+                                            key={size}
+                                            onClick={(e) => { e.stopPropagation(); setSelectedSize(size); }}
+                                            className={`w-8 h-8 flex items-center justify-center text-xs transition-colors ${selectedSize === size ? 'bg-[#1A1A1A] text-white' : 'text-[#1A1A1A] hover:bg-gray-100'}`}
+                                        >
+                                            {size}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </div>
 
-                        {/* DESKTOP CTA */}
+                        {/* CTA */}
                         <button
                             onClick={handleAddToCart}
-                            className="w-full py-4 bg-[#2A2624] text-white hover:bg-[#4a4a4a] transition-colors flex items-center justify-center gap-3 shadow-lg uppercase tracking-widest font-bold text-sm rounded-sm"
+                            className="w-full py-4 bg-[#1A1A1A] text-white hover:bg-[#333] transition-colors flex items-center justify-center gap-3 uppercase tracking-widest font-bold text-xs mb-10"
                         >
-                            <ShoppingBag size={20} />
+                            <ShoppingBag size={16} />
                             Ajouter au Panier
                         </button>
 
-                        {/* Reassurance Block */}
-                        <div className="bg-[#F2EBE3]/50 p-6 border border-[#E5DCD0] space-y-4 rounded-sm">
-                            <div className="flex items-center gap-4 text-sm text-[#2A2624]/70 font-light">
-                                <Truck size={20} className="text-[#96754a] flex-shrink-0" />
-                                <span>Livraison partout au Maroc et à l'international.</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-[#2A2624]/70 font-light">
-                                <ShieldCheck size={20} className="text-[#96754a] flex-shrink-0" />
-                                <span>Qualité Garantie - Tissus Premium.</span>
-                            </div>
-                            <div className="flex items-center gap-4 text-sm text-[#2A2624]/70 font-light">
-                                <Phone size={20} className="text-[#96754a] flex-shrink-0" />
-                                <span>Service Client disponible 7j/7.</span>
-                            </div>
+                        {/* Description */}
+                        <div className="mb-10 text-sm font-light text-[#1A1A1A]/80 leading-relaxed">
+                            <p>{product.description}</p>
+                            <p className="mt-4">
+                                Fabriqué au Maroc.<br />
+                                Finitions main.
+                            </p>
                         </div>
+
+                        {/* Accordions */}
+                        <div className="space-y-0">
+                            <AccordionItem title="Entretien">
+                                Nettoyage à sec uniquement. Manipuler avec soin.
+                            </AccordionItem>
+                            <AccordionItem title="Livraison et Retours">
+                                Livraison gratuite au Maroc. Retours sous 14 jours.
+                            </AccordionItem>
+                            <AccordionItem title="Offrir un cadeau">
+                                Emballage signature Maison Khoub inclus. Message personnalisé disponible au panier.
+                            </AccordionItem>
+                        </div>
+
                     </div>
                 </div>
 
-                {/* SECTION 2: SIMILAR PRODUCTS */}
-                {similarProducts.length > 0 && (
-                    <div className="mt-24 py-16 border-t border-[#E5DCD0]">
-                        <div className="text-center mb-12">
-                            <h3 className="text-3xl text-[#2A2624] mb-4" style={{ fontFamily: 'Playfair Display, serif' }}>Vous aimerez aussi</h3>
-                            <div className="w-16 h-[1px] bg-[#96754a] mx-auto"></div>
-                        </div>
+                {/* --- CROSS-SELL: COMPAGNON IDÉAL --- */}
+                {perfectMatch && (
+                    <div className="mt-24 mb-16">
+                        <h3 className="text-2xl md:text-3xl font-serif italic text-[#1A1A1A] mb-8">Idéal pour vous</h3>
+                        <Link to={`/product/${perfectMatch.id}`} className="block w-full md:w-1/3 group">
+                            <div className="bg-[#F2EBE3] aspect-square relative overflow-hidden mb-4">
+                                <img src={perfectMatch.image} alt={perfectMatch.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                            </div>
+                            <h4 className="text-lg font-serif text-[#1A1A1A]">{perfectMatch.name}</h4>
+                            <p className="text-sm font-light text-[#1A1A1A]">{perfectMatch.price.toLocaleString('fr-MA')} MAD</p>
+                        </Link>
+                    </div>
+                )}
 
+                {/* --- CROSS-SELL: EXPLOREZ D'AUTRES PISTES --- */}
+                {otherSuggestions.length > 0 && (
+                    <div className="mt-16 border-t border-[#E5DCD0] pt-16">
+                        <h3 className="text-2xl md:text-3xl font-serif italic text-[#1A1A1A] mb-8">Explorez d'autres pistes</h3>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            {similarProducts.map((p) => (
+                            {otherSuggestions.map((p) => (
                                 <Link key={p.id} to={`/product/${p.id}`} className="group block">
-                                    <div className="aspect-[3/4] overflow-hidden mb-4 bg-[#F2EBE3] rounded-lg">
+                                    <div className="aspect-[3/4] overflow-hidden mb-4 bg-[#F2EBE3]">
                                         <img src={p.image} alt={p.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
                                     </div>
-                                    <h4 className="text-[#2A2624] text-lg mb-1" style={{ fontFamily: 'Playfair Display, serif' }}>{p.name}</h4>
-                                    <p className="text-[#96754a] font-light">{p.price.toLocaleString('fr-MA')} MAD</p>
+                                    <h4 className="text-[#1A1A1A] text-lg mb-1 font-serif">{p.name}</h4>
+                                    <p className="text-[#1A1A1A] font-light text-sm">{p.price.toLocaleString('fr-MA')} MAD</p>
                                 </Link>
                             ))}
                         </div>
@@ -194,25 +260,23 @@ export function ProductPage() {
                 )}
             </div>
 
-            {/* STICKY BOTTOM BAR (Mobile Only) */}
+            {/* STICKY BOTTOM BAR (Mobile) */}
             <AnimatePresence>
                 {showStickyBar && (
                     <motion.div
                         initial={{ y: 100 }}
                         animate={{ y: 0 }}
                         exit={{ y: 100 }}
-                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-                        className="lg:hidden fixed bottom-0 left-0 right-0 bg-[#FBF7F0] border-t border-[#E5DCD0] shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] p-4 z-50 flex items-center justify-between gap-4"
+                        className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-[#E5DCD0] p-4 z-50 flex items-center justify-between gap-4"
                     >
-                        <div className="flex flex-col">
-                            <h3 className="text-[#2A2624] font-bold text-sm truncate max-w-[150px]" style={{ fontFamily: 'Playfair Display, serif' }}>{product.name}</h3>
-                            <p className="text-[#96754a] text-xs font-medium">{product.price.toLocaleString('fr-MA')} MAD</p>
+                        <div>
+                            <p className="text-[#1A1A1A] font-bold text-xs uppercase">{product.name}</p>
+                            <p className="text-[#1A1A1A] text-xs">{product.price.toLocaleString('fr-MA')} MAD</p>
                         </div>
                         <button
                             onClick={handleAddToCart}
-                            className="bg-[#2A2624] text-white px-6 py-3 rounded-full font-bold text-sm shadow-md flex items-center gap-2"
+                            className="bg-[#1A1A1A] text-white px-6 py-3 font-bold text-xs uppercase tracking-widest"
                         >
-                            <ShoppingBag size={18} />
                             Ajouter
                         </button>
                     </motion.div>
