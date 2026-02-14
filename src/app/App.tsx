@@ -82,7 +82,8 @@ function AppContent() {
         onDecline={handleDeclineUpsell}
       />
 
-      <WhatsAppFloat />
+      {/* Hide WhatsApp on Product Page */}
+      {!window.location.pathname.startsWith('/product/') && <WhatsAppFloat />}
     </div>
   );
 }
