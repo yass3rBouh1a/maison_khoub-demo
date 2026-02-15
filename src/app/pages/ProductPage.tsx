@@ -105,12 +105,19 @@ export function ProductPage() {
                     <div className="flex flex-col gap-6">
                         {/* Desktop Grid */}
                         <div className="hidden lg:flex flex-col gap-6">
-                            <div className="aspect-[3/4] w-full bg-[#F2EBE3] relative">
-                                <img
-                                    src={mainImage}
-                                    alt={product.name}
-                                    className="w-full h-full object-cover"
-                                />
+                            <div className="aspect-[3/4] w-full bg-[#F2EBE3] relative overflow-hidden">
+                                <AnimatePresence mode="wait">
+                                    <motion.img
+                                        key={mainImage}
+                                        src={mainImage}
+                                        alt={product.name}
+                                        className="w-full h-full object-cover"
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 0.3 }}
+                                    />
+                                </AnimatePresence>
                             </div>
                             <div className="grid grid-cols-4 gap-4">
                                 {allImages.map((img, i) => (
