@@ -29,7 +29,6 @@ import r2_3 from '../../assets/image/COLLECTION RAMADAN EID 2026/img2/A6709293.j
 import r2_4 from '../../assets/image/COLLECTION RAMADAN EID 2026/img2/A6709303.jpg';
 import r2_5 from '../../assets/image/COLLECTION RAMADAN EID 2026/img2/A6709313.jpg';
 import r2_6 from '../../assets/image/COLLECTION RAMADAN EID 2026/img2/A6709332.jpg';
-import r2_7 from '../../assets/image/COLLECTION RAMADAN EID 2026/img2/A6709352.jpg';
 
 // Product 3
 import r3_1 from '../../assets/image/COLLECTION RAMADAN EID 2026/img3/A6709425 - primary.jpg'; // Primary
@@ -68,6 +67,9 @@ import r7_3 from '../../assets/image/COLLECTION RAMADAN EID 2026/img7/A6709657.j
 import r7_4 from '../../assets/image/COLLECTION RAMADAN EID 2026/img7/A6709661 (1).jpg';
 import r7_5 from '../../assets/image/COLLECTION RAMADAN EID 2026/img7/A6709661.jpg';
 
+// Product 8
+import r8_1 from '../../assets/image/COLLECTION RAMADAN EID 2026/img8/A6709352.jpg';
+
 export interface CartItem {
     product: Product;
     size: string;
@@ -98,7 +100,7 @@ const ramadanCollection: Product[] = [
         price: 2450,
         category: "COLLECTION RAMADAN EID 2026",
         image: r2_1,
-        images: [r2_1, r2_2, r2_3, r2_4, r2_5, r2_6, r2_7],
+        images: [r2_1, r2_2, r2_3, r2_4, r2_5, r2_6],
         description: "Costume Beldi traditionnel revisité avec une touche moderne.",
         isFeatured: true,
         colors: [
@@ -181,6 +183,21 @@ const ramadanCollection: Product[] = [
             { name: "Vert Émeraude", hex: "#50C878" }
         ]
     },
+    {
+        id: "ramadan-8",
+        name: "Jellaba Moderne Chic",
+        slug: "jellaba-moderne-chic",
+        price: 1950,
+        category: "COLLECTION RAMADAN EID 2026",
+        image: r8_1,
+        images: [r8_1],
+        description: "Une Jellaba moderne au design épuré, parfaite pour les occasions spéciales du Ramadan.",
+        isFeatured: true,
+        colors: [
+            { name: "Gris Perle", hex: "#EAEAEA" },
+            { name: "Bleu Ciel", hex: "#87CEEB" }
+        ]
+    }
 ];
 
 export const products: Product[] = [
