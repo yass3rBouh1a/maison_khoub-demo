@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
@@ -21,12 +22,25 @@ function ScrollToTop() {
   return null;
 }
 
+import { LoadingScreen } from './components/ui/LoadingScreen';
+import { AnimatePresence } from 'framer-motion';
+
 function AppContent() {
   const navigate = useNavigate();
-  // const [_selectedProduct, setSelectedProduct] = useState<Product | null>(null); // For Upsell context mainly
+  const location = useLocation();
   const [showUpsellModal, setShowUpsellModal] = useState(false);
-  // const [cartItems, setCartItems] = useState<Array<{ product: Product; size: string }>>([]);
   const { addToCart } = useCart();
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Loading Screen Effect on Route Change
+  useEffect(() => {
+    setIsLoading(true);
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1500); // 1.5s loading time
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   const handleProductClick = (product: Product) => {
     navigate(`/product/${product.id}`);
@@ -51,6 +65,18 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-[#FBF7F0] flex flex-col justify-between relative">
+      <AnimatePresence>
+        {isLoading && (
+          <motion.div
+            initial={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-[100]"
+          >
+            <LoadingScreen />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <ScrollToTop />
       <Header />
       <CartDrawer />

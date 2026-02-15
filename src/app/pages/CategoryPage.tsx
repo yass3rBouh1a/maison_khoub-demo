@@ -35,7 +35,7 @@ export function CategoryPage() {
         <div className="bg-[#FBF7F0] min-h-screen pb-24 font-sans">
 
             {/* Header / Filter Section */}
-            <div className="container mx-auto px-4 md:px-8 pt-12 mb-12">
+            <div className="container mx-auto px-4 md:px-8 pt-28 md:pt-32 mb-12">
                 <div className="flex flex-col gap-2">
                     {/* Breadcrumb / Label */}
                     <span className="text-xs font-bold tracking-widest text-[#1A1A1A] uppercase">

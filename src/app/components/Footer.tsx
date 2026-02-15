@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Instagram, Facebook } from 'lucide-react';
+import { Instagram } from 'lucide-react';
 
 export function Footer() {
     return (
@@ -16,8 +16,9 @@ export function Footer() {
                             L'Art de l'élégance marocaine. Une fusion entre tradition ancestrale et modernité, pour la femme d'aujourd'hui.
                         </p>
                         <div className="flex gap-4 text-[#FBF7F0]">
-                            <Instagram size={20} className="hover:text-[#2A2624] cursor-pointer transition-colors" />
-                            <Facebook size={20} className="hover:text-[#2A2624] cursor-pointer transition-colors" />
+                            <a href="https://www.instagram.com/maison_khoub/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                                <Instagram size={20} className="hover:text-[#2A2624] cursor-pointer transition-colors" />
+                            </a>
                         </div>
                     </div>
 

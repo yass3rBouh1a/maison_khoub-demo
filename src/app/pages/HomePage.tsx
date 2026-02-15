@@ -22,11 +22,14 @@ const SlideshowProductCard = ({ product, onClick }: { product: Product; onClick:
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
+    // Filter valid images (ensure we have an array)
+    const images = product.images && product.images.length > 0 ? product.images : [product.image];
+
     const handleMouseEnter = () => {
-        if (product.images && product.images.length > 1) {
+        if (images.length > 1) {
             intervalRef.current = setInterval(() => {
-                setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images!.length);
-            }, 3000); // Slower interval for 2s transition
+                setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+            }, 1500); // Faster slideshow
         }
     };
 
@@ -38,9 +41,17 @@ const SlideshowProductCard = ({ product, onClick }: { product: Product; onClick:
         }
     };
 
-    const currentImage = product.images && product.images.length > 0
-        ? product.images[currentImageIndex]
-        : product.image;
+    const handleDotClick = (e: React.MouseEvent, index: number) => {
+        e.stopPropagation(); // Prevent product click
+        setCurrentImageIndex(index);
+        // Reset interval to avoid jumpy behavior immediately after click
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = setInterval(() => {
+                setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+            }, 1500);
+        }
+    };
 
     return (
         <div
@@ -50,20 +61,37 @@ const SlideshowProductCard = ({ product, onClick }: { product: Product; onClick:
             onClick={onClick}
         >
             <div className="relative aspect-[3/4] overflow-hidden bg-[#F5F0E6]">
-                <AnimatePresence mode="wait">
+                <AnimatePresence>
                     <motion.img
-                        key={currentImage}
-                        src={currentImage}
+                        key={images[currentImageIndex]}
+                        src={images[currentImageIndex]}
                         alt={product.name}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 2, ease: "easeInOut" }}
+                        transition={{ duration: 0.5, ease: "easeInOut" }} // Smoother, faster crossfade
                         className="w-full h-full object-cover absolute inset-0"
                         loading="lazy"
                         decoding="async"
                     />
                 </AnimatePresence>
+
+                {/* Thumbnails / Dots Indicator */}
+                {images.length > 1 && (
+                    <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        {images.map((_, idx) => (
+                            <button
+                                key={idx}
+                                onClick={(e) => handleDotClick(e, idx)}
+                                className={`w-2 h-2 rounded-full shadow-sm transition-all ${idx === currentImageIndex
+                                        ? 'bg-white scale-110'
+                                        : 'bg-white/50 hover:bg-white/80'
+                                    }`}
+                                aria-label={`View image ${idx + 1}`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
 
             <div className="text-left space-y-1">
