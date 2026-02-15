@@ -1,16 +1,19 @@
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect, Suspense, lazy } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { UpsellModal } from './components/UpsellModal';
-import { HomePage } from './pages/HomePage';
-import { CategoryPage } from './pages/CategoryPage';
-import { ProductPage } from './pages/ProductPage';
 import { products, upsellProduct, Product } from './data/products';
 import { WhatsAppFloat } from './components/ui/WhatsAppFloat';
 import { CartProvider, useCart } from './context/CartContext';
 import { CartDrawer } from './components/CartDrawer';
+import { LoadingScreen } from './components/ui/LoadingScreen';
+
+// Lazy load pages
+const HomePage = lazy(() => import('./pages/HomePage').then(module => ({ default: module.HomePage })));
+const CategoryPage = lazy(() => import('./pages/CategoryPage').then(module => ({ default: module.CategoryPage })));
+const ProductPage = lazy(() => import('./pages/ProductPage').then(module => ({ default: module.ProductPage })));
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -21,9 +24,6 @@ function ScrollToTop() {
 
   return null;
 }
-
-import { LoadingScreen } from './components/ui/LoadingScreen';
-import { AnimatePresence } from 'framer-motion';
 
 function AppContent() {
   const navigate = useNavigate();
@@ -82,20 +82,22 @@ function AppContent() {
       <CartDrawer />
 
       <main className="flex-grow">
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <HomePage
-                products={products}
-                onProductClick={handleProductClick}
-                onScrollToProducts={scrollToProducts}
-              />
-            }
-          />
-          <Route path="/collections/:slug" element={<CategoryPage />} />
-          <Route path="/product/:id" element={<ProductPage />} />
-        </Routes>
+        <Suspense fallback={<LoadingScreen />}>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <HomePage
+                  products={products}
+                  onProductClick={handleProductClick}
+                  onScrollToProducts={scrollToProducts}
+                />
+              }
+            />
+            <Route path="/collections/:slug" element={<CategoryPage />} />
+            <Route path="/product/:id" element={<ProductPage />} />
+          </Routes>
+        </Suspense>
       </main>
 
       <Footer />

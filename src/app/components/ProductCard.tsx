@@ -63,6 +63,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
             className="w-full h-full object-cover absolute inset-0"
+            loading="lazy"
+            decoding="async"
           />
         </AnimatePresence>
 
@@ -84,8 +86,8 @@ export function ProductCard({ product, onClick }: ProductCardProps) {
                 key={idx}
                 onClick={(e) => handleDotClick(e, idx)}
                 className={`w-2 h-2 rounded-full shadow-sm transition-all ${idx === currentImageIndex
-                    ? 'bg-white scale-110'
-                    : 'bg-white/50 hover:bg-white/80'
+                  ? 'bg-white scale-110'
+                  : 'bg-white/50 hover:bg-white/80'
                   }`}
                 aria-label={`View image ${idx + 1}`}
               />
