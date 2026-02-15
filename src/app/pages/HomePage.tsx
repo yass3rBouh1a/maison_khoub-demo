@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Globe, MessageCircle, Play, Pause, Volume2, VolumeX } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Product } from '../data/products';
 
 import heroVideo from '../../assets/video/maison_khoub_1.mp4';
 import heritageImg1 from '../../assets/image/COLLECTION RAMADAN EID 2026/img3/A6709425 - primary.jpg';
 import heritageImg2 from '../../assets/image/COLLECTION RAMADAN EID 2026/img6/A6709610 - primary.jpg';
+import eidReminderImg from '../../assets/image/COLLECTION RAMADAN EID 2026/img5/A6709513 - primary.jpg';
 
 // Image imports removed - using data/products.ts
 
@@ -24,7 +26,7 @@ const SlideshowProductCard = ({ product, onClick }: { product: Product; onClick:
         if (product.images && product.images.length > 1) {
             intervalRef.current = setInterval(() => {
                 setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images!.length);
-            }, 800); // Change slide every 800ms
+            }, 3000); // Slower interval for 2s transition
         }
     };
 
@@ -48,11 +50,20 @@ const SlideshowProductCard = ({ product, onClick }: { product: Product; onClick:
             onClick={onClick}
         >
             <div className="relative aspect-[3/4] overflow-hidden bg-[#F5F0E6]">
-                <img
-                    src={currentImage}
-                    alt={product.name}
-                    className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
-                />
+                <AnimatePresence mode="wait">
+                    <motion.img
+                        key={currentImage}
+                        src={currentImage}
+                        alt={product.name}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 2, ease: "easeInOut" }}
+                        className="w-full h-full object-cover absolute inset-0"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                </AnimatePresence>
             </div>
 
             <div className="text-left space-y-1">
@@ -197,12 +208,16 @@ export function HomePage({ products: allProducts, onProductClick, onScrollToProd
                                 src={heritageImg1}
                                 alt="Atelier"
                                 className="absolute top-0 right-0 w-3/4 h-[500px] object-cover z-0"
+                                loading="lazy"
+                                decoding="async"
                             />
                             {/* Small Image Overlay */}
                             <img
                                 src={heritageImg2}
                                 alt="Detail"
                                 className="absolute bottom-0 left-0 w-1/2 h-[350px] object-cover z-10 border-8 border-white"
+                                loading="lazy"
+                                decoding="async"
                             />
                         </div>
                     </div>
@@ -211,7 +226,37 @@ export function HomePage({ products: allProducts, onProductClick, onScrollToProd
 
 
 
-            {/* 6. Section Services: 3 colonnes icônes */}
+            {/* 5. Section Rappel Collection Eid */}
+            <section className="relative h-[60vh] md:h-[70vh] flex items-center justify-center overflow-hidden">
+                <div className="absolute inset-0">
+                    <img
+                        src={eidReminderImg}
+                        alt="Collection Eid"
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
+                    />
+                    <div className="absolute inset-0 bg-black/30"></div>
+                </div>
+
+                <div className="relative z-10 text-center text-white px-4 max-w-4xl mx-auto">
+                    <span className="block text-xs md:text-sm uppercase tracking-[0.3em] mb-4 font-light">
+                        Édition Limitée
+                    </span>
+                    <h2 className="text-4xl md:text-6xl font-serif italic mb-8">
+                        Sublimez votre Eïd
+                    </h2>
+                    <p className="text-sm md:text-base font-light mb-10 max-w-xl mx-auto opacity-90">
+                        Découvrez nos créations exclusives pour les célébrations, alliant tradition et modernité.
+                    </p>
+                    <button
+                        onClick={onScrollToProducts}
+                        className="bg-white text-luxury-black px-10 py-4 uppercase tracking-widest text-xs font-bold hover:bg-luxury-cream transition-all duration-300 pointer-events-auto"
+                    >
+                        Explorer la Collection
+                    </button>
+                </div>
+            </section>
             <section className="py-24 bg-white border-t border-luxury-border/30">
                 <div className="container mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">

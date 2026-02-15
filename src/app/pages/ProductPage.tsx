@@ -126,7 +126,13 @@ export function ProductPage() {
                                         onClick={() => setMainImage(img)}
                                         className={`aspect-[3/4] cursor-pointer border transition-all ${mainImage === img ? 'border-[#1A1A1A]' : 'border-transparent hover:border-[#E5DCD0]'}`}
                                     >
-                                        <img src={img} className="w-full h-full object-cover" alt={`Thumbnail ${i}`} />
+                                        <img
+                                            src={img}
+                                            className="w-full h-full object-cover"
+                                            alt={`Thumbnail ${i}`}
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
                                     </div>
                                 ))}
                             </div>
